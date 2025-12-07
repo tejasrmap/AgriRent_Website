@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AgriRent - Premium Agricultural Equipment Rentals</title>
+  <style>
+    :root {
+      --primary: #2e8b57;
+      --primary-light: #3cb371;
+      --accent: #ffa500;
+      --accent-dark: #ff8c00;
+      --dark: #1e5631;
+      --light-bg: #f5f9f7;
+      --card-bg: #ffffff;
+      --text: #2c3e50;
+      --text-light: #7f8c8d;
+      --radius: 16px;
+      --shadow: 0 8px 30px rgba(0,0,0,0.08);
+      --shadow-hover: 0 15px 40px rgba(0,0,0,0.15);
+    }
+
+    * {
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--light-bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .logo::before {
+      content: "🌾";
+      margin-right: 0.5rem;
+      font-size: 1.5rem;
+    }
+
+    .header nav {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .header nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    .header nav a:hover {
+      color: var(--primary);
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn-auth {
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-login {
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-login:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-signup {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-signup:hover {
+      background: var(--dark);
+    }
+
+    .user-menu {
+      display: none;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .user-name {
+      font-weight: 500;
+    }
+
+    .btn-logout {
+      background: transparent;
+      color: var(--text-light);
+      border: 1px solid #e0e0e0;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-logout:hover {
+      background: #f5f5f5;
+      color: var(--text);
+    }
+
+    /* Cart Icon */
+    .cart-icon {
+      position: relative;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: var(--text);
+      transition: color 0.3s ease;
+    }
+
+    .cart-icon:hover {
+      color: var(--primary);
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    /* Cart Modal */
+    .cart-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 100%;
+      max-width: 400px;
+      height: 100vh;
+      background: white;
+      z-index: 2000;
+      box-shadow: -5px 0 30px rgba(0,0,0,0.1);
+      overflow-y: auto;
+    }
+
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid #e0e0e0;
+      background: var(--light-bg);
+    }
+
+    .cart-header h2 {
+      color: var(--dark);
+      font-size: 1.5rem;
+    }
+
+    .close-cart {
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-light);
+      transition: color 0.3s ease;
+    }
+
+    .close-cart:hover {
+      color: var(--text);
+    }
+
+    .cart-items {
+      padding: 1rem;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .cart-item-img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .cart-item-details {
+      flex: 1;
+    }
+
+    .cart-item-name {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--dark);
+    }
+
+    .cart-item-price {
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .cart-item-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .quantity-btn {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #e0e0e0;
+      background: white;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .quantity-btn:hover {
+      background: #f5f5f5;
+    }
+
+    .quantity-input {
+      width: 40px;
+      text-align: center;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      padding: 0.3rem;
+    }
+
+    .remove-item {
+      color: #e74c3c;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      margin-left: auto;
+      transition: color 0.3s ease;
+    }
+
+    .remove-item:hover {
+      color: #c0392b;
+    }
+
+    .cart-footer {
+      padding: 1.5rem;
+      border-top: 1px solid #e0e0e0;
+      background: var(--light-bg);
+      position: sticky;
+      bottom: 0;
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .cart-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .btn-cart {
+      padding: 0.8rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .btn-checkout {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-checkout:hover {
+      background: var(--dark);
+    }
+
+    .btn-continue {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid #e0e0e0;
+    }
+
+    .btn-continue:hover {
+      background: #f5f5f5;
+    }
+
+    .empty-cart {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-light);
+    }
+
+    .empty-cart-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* Checkout Page */
+    .checkout-page {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: var(--light-bg);
+      z-index: 3000;
+      overflow-y: auto;
+      padding: 2rem;
+    }
+
+    .checkout-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-hover);
+      overflow: hidden;
+    }
+
+    .checkout-header {
+      background: var(--primary);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .checkout-header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .checkout-steps {
+      display: flex;
+      justify-content: center;
+      margin-top: 1.5rem;
+      gap: 2rem;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+    }
+
+    .step-number {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.5rem;
+      font-weight: 600;
+    }
+
+    .step.active .step-number {
+      background: white;
+      color: var(--primary);
+    }
+
+    .step-text {
+      font-size: 0.9rem;
+    }
+
+    .checkout-body {
+      display: flex;
+      padding: 2rem;
+      gap: 2rem;
+    }
+
+    .checkout-form {
+      flex: 2;
+    }
+
+    .checkout-summary {
+      flex: 1;
+      background: var(--light-bg);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      height: fit-content;
+    }
+
+    .form-section {
+      margin-bottom: 2rem;
+    }
+
+    .form-section h3 {
+      margin-bottom: 1rem;
+      color: var(--dark);
+      font-size: 1.3rem;
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 0.5rem;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-group {
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.2);
+    }
+
+    .payment-methods {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .payment-method {
+      flex: 1;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .payment-method:hover {
+      border-color: var(--primary-light);
+    }
+
+    .payment-method.selected {
+      border-color: var(--primary);
+      background: rgba(46, 139, 87, 0.05);
+    }
+
+    .payment-method-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .payment-details {
+      display: none;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    .payment-details.active {
+      display: block;
+    }
+
+    .summary-title {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--dark);
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 0.5rem;
+    }
+
+    .summary-items {
+      margin-bottom: 1.5rem;
+    }
+
+    .summary-item-checkout {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .summary-item-checkout:last-child {
+      border-bottom: none;
+    }
+
+    .item-name {
+      flex: 2;
+    }
+
+    .item-quantity {
+      flex: 1;
+      text-align: center;
+    }
+
+    .item-price {
+      flex: 1;
+      text-align: right;
+      font-weight: 600;
+    }
+
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 2px solid var(--primary-light);
+    }
+
+    .checkout-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      background: var(--dark);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid #e0e0e0;
+    }
+
+    .btn-secondary:hover {
+      background: #f5f5f5;
+    }
+
+    /* Order Confirmation Page */
+    .confirmation-page {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: var(--light-bg);
+      z-index: 4000;
+      overflow-y: auto;
+      padding: 2rem;
+    }
+
+    .confirmation-content {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-hover);
+      overflow: hidden;
+    }
+
+    .confirmation-header {
+      background: var(--primary);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .confirmation-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .confirmation-header h2 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .confirmation-body {
+      padding: 2.5rem;
+    }
+
+    .order-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: var(--light-bg);
+      border-radius: var(--radius);
+    }
+
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .detail-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .confirmation-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      height: 70vh;
+      color: white;
+      overflow: hidden;
+      margin-top: 80px;
+    }
+
+    .carousel {
+      position: absolute;
+      inset: 0;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6));
+      z-index: 1;
+    }
+
+    /* Hero Text */
+    .hero-text {
+      z-index: 2;
+      position: relative;
+      top: 50%;
+      text-align: center;
+      transform: translateY(-50%);
+      padding: 0 2rem;
+    }
+
+    .hero-text h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .hero-text p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Search Bar */
+    .search-section {
+      position: relative;
+      z-index: 5;
+      margin-top: -50px;
+      padding: 0 2rem;
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 1rem;
+      padding: 1.2rem 1.5rem;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      width: 90%;
+      max-width: 1000px;
+      margin: 0 auto;
+      box-shadow: var(--shadow);
+    }
+
+    .search-bar input,
+    .search-bar select {
+      flex: 1;
+      padding: 0.8rem 1rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+
+    .search-bar input:focus,
+    .search-bar select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.2);
+    }
+
+    /* Equipment Grid */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      font-size: 2.2rem;
+      color: var(--dark);
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      width: 80px;
+      height: 4px;
+      background: var(--accent);
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 2px;
+    }
+
+    .equipment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: var(--accent);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      z-index: 2;
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .card:hover img {
+      transform: scale(1.05);
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    .card-body h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: var(--dark);
+    }
+
+    .card-category {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .price {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-card {
+      background: var(--primary);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      flex: 1;
+    }
+
+    .btn-card:hover {
+      background: var(--dark);
+    }
+
+    .btn-cart-add {
+      background: var(--accent);
+      color: var(--text);
+      flex: 0 0 auto;
+      width: 50px;
+      padding: 0.8rem;
+    }
+
+    .btn-cart-add:hover {
+      background: var(--accent-dark);
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: var(--radius);
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+
+    .modal-img {
+      width: 100%;
+      border-radius: var(--radius);
+      margin-bottom: 1.5rem;
+      max-height: 250px;
+      object-fit: cover;
+    }
+
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--text-light);
+      transition: color 0.3s ease;
+    }
+
+    .close:hover {
+      color: var(--text);
+    }
+
+    .modal h2 {
+      margin-bottom: 0.5rem;
+      color: var(--dark);
+    }
+
+    .modal-price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .modal form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .modal form label {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .modal form input, .modal form textarea {
+      padding: 0.8rem 1rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+
+    .modal form input:focus, .modal form textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.2);
+    }
+
+    .modal .btn {
+      margin-top: 1rem;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--dark);
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      text-align: left;
+    }
+
+    .footer-section h3 {
+      margin-bottom: 1.5rem;
+      font-size: 1.3rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .footer-section h3::after {
+      content: '';
+      position: absolute;
+      width: 40px;
+      height: 3px;
+      background: var(--accent);
+      bottom: -8px;
+      left: 0;
+    }
+
+    .footer-section p, .footer-section a {
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 0.8rem;
+      display: block;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-section a:hover {
+      color: white;
+    }
+
+    .footer-bottom {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      text-align: center;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .header nav {
+        gap: 1rem;
+      }
+      
+      .auth-buttons {
+        flex-direction: column;
+        width: 100%;
+      }
+      
+      .btn-auth {
+        width: 100%;
+        text-align: center;
+      }
+      
+      .hero {
+        height: 60vh;
+        margin-top: 140px;
+      }
+      
+      .hero-text h1 {
+        font-size: 2rem;
+      }
+      
+      .hero-text p {
+        font-size: 1rem;
+      }
+      
+      .search-bar {
+        flex-direction: column;
+        padding: 1rem;
+      }
+      
+      .equipment-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .user-menu {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .cart-modal, .checkout-page, .confirmation-page {
+        max-width: 100%;
+        padding: 1rem;
+      }
+      
+      .card-actions {
+        flex-direction: column;
+      }
+      
+      .checkout-body {
+        flex-direction: column;
+      }
+      
+      .checkout-steps {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+      
+      .form-row {
+        flex-direction: column;
+      }
+      
+      .payment-methods {
+        flex-direction: column;
+      }
+      
+      .confirmation-actions {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <a href="#" class="logo">AgriRent</a>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Equipment</a>
+      <a href="#">How It Works</a>
+      <a href="#">Contact</a>
+      
+      <!-- Cart Icon -->
+      <div class="cart-icon" id="cartIcon">
+        🛒
+        <span class="cart-count" id="cartCount">0</span>
+      </div>
+      
+      <!-- Authentication Buttons (shown when user is not logged in) -->
+      <div class="auth-buttons" id="authButtons">
+        <button class="btn-auth btn-login" id="loginBtn">Log In</button>
+        <button class="btn-auth btn-signup" id="signupBtn">Sign Up</button>
+      </div>
+      
+      <!-- User Menu (shown when user is logged in) -->
+      <div class="user-menu" id="userMenu">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <span class="user-name" id="userName">User</span>
+        <button class="btn-logout" id="logoutBtn">Log Out</button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section with Carousel -->
+  <section class="hero">
+    <div class="carousel" id="carousel">
+      <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1632&q=80')"></div>
+      <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80')"></div>
+    </div>
+
+    <div class="hero-text">
+      <h1>Modern Farming, Made Simple</h1>
+      <p>Rent top-quality agricultural equipment at affordable prices. Boost your productivity with our premium tools.</p>
+    </div>
+  </section>
+
+  <!-- Search Bar -->
+  <section class="search-section">
+    <div class="search-bar">
+      <input type="text" id="searchBox" placeholder="🔍 Search equipment..."/>
+      <select id="categoryFilter">
+        <option value="">All Categories</option>
+        <option value="tractor">Tractors</option>
+        <option value="harvester">Harvesters</option>
+        <option value="irrigation">Irrigation</option>
+        <option value="Rotavators">Rotavators</option>
+        <option value="pest control">Pest Control</option>
+        <option value="Paddy Extractor">Paddy Extractors</option>
+      </select>
+      <select id="sortFilter">
+        <option value="">Sort by</option>
+        <option value="low-high">Price: Low to High</option>
+        <option value="high-low">Price: High to Low</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- Equipment Grid -->
+  <main class="container">
+    <h2 class="section-title">Available Equipment</h2>
+    <div class="equipment-grid" id="equipmentGrid">
+      <!-- Equipment cards will be populated by JavaScript -->
+    </div>
+  </main>
+
+  <!-- Cart Modal -->
+  <div class="cart-modal" id="cartModal">
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <span class="close-cart" id="closeCart">&times;</span>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <!-- Cart items will be populated by JavaScript -->
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total:</span>
+        <span id="cartTotal">₹0</span>
+      </div>
+      <div class="cart-actions">
+        <button class="btn-cart btn-checkout" id="checkoutBtn">Proceed to Checkout</button>
+        <button class="btn-cart btn-continue" id="continueShopping">Continue Shopping</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Page -->
+  <div class="checkout-page" id="checkoutPage">
+    <div class="checkout-container">
+      <div class="checkout-header">
+        <h1>Checkout</h1>
+        <p>Complete your rental order</p>
+        <div class="checkout-steps">
+          <div class="step active">
+            <div class="step-number">1</div>
+            <div class="step-text">Delivery Details</div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-text">Payment</div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-text">Confirmation</div>
+          </div>
+        </div>
+      </div>
+      <div class="checkout-body">
+        <div class="checkout-form">
+          <form id="checkoutForm">
+            <!-- Delivery Details Section -->
+            <div class="form-section" id="deliverySection">
+              <h3>Delivery Details</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="deliveryName">Full Name</label>
+                  <input type="text" id="deliveryName" required>
+                </div>
+                <div class="form-group">
+                  <label for="deliveryPhone">Phone Number</label>
+                  <input type="tel" id="deliveryPhone" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="deliveryAddress">Delivery Address</label>
+                <textarea id="deliveryAddress" rows="3" required></textarea>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="deliveryCity">City</label>
+                  <input type="text" id="deliveryCity" required>
+                </div>
+                <div class="form-group">
+                  <label for="deliveryState">State</label>
+                  <input type="text" id="deliveryState" required>
+                </div>
+                <div class="form-group">
+                  <label for="deliveryZip">ZIP Code</label>
+                  <input type="text" id="deliveryZip" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="deliveryDate">Preferred Delivery Date</label>
+                <input type="date" id="deliveryDate" required>
+              </div>
+              <div class="form-group">
+                <label for="rentalDays">Rental Duration (days)</label>
+                <input type="number" id="rentalDays" min="1" value="1" required>
+              </div>
+            </div>
+
+            <!-- Payment Section -->
+            <div class="form-section" id="paymentSection" style="display: none;">
+              <h3>Payment Method</h3>
+              <div class="payment-methods">
+                <div class="payment-method" data-method="card">
+                  <div class="payment-method-icon">💳</div>
+                  <div>Credit/Debit Card</div>
+                </div>
+                <div class="payment-method" data-method="upi">
+                  <div class="payment-method-icon">📱</div>
+                  <div>UPI</div>
+                </div>
+                <div class="payment-method" data-method="cash">
+                  <div class="payment-method-icon">💰</div>
+                  <div>Cash on Delivery</div>
+                </div>
+              </div>
+
+              <!-- Card Payment Details -->
+              <div class="payment-details" id="cardDetails">
+                <div class="form-group">
+                  <label for="cardNumber">Card Number</label>
+                  <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456">
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="cardExpiry">Expiry Date</label>
+                    <input type="text" id="cardExpiry" placeholder="MM/YY">
+                  </div>
+                  <div class="form-group">
+                    <label for="cardCVC">CVC</label>
+                    <input type="text" id="cardCVC" placeholder="123">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="cardName">Name on Card</label>
+                  <input type="text" id="cardName">
+                </div>
+              </div>
+
+              <!-- UPI Payment Details -->
+              <div class="payment-details" id="upiDetails">
+                <div class="form-group">
+                  <label for="upiId">UPI ID</label>
+                  <input type="text" id="upiId" placeholder="yourname@upi">
+                </div>
+              </div>
+
+              <!-- Cash on Delivery Message -->
+              <div class="payment-details" id="cashDetails">
+                <p>Pay when your equipment is delivered. Our team will provide you with a payment receipt.</p>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="checkout-actions">
+              <button type="button" class="btn btn-secondary" id="backToCart">Back to Cart</button>
+              <button type="button" class="btn btn-secondary" id="prevStep" style="display: none;">Previous</button>
+              <button type="button" class="btn btn-primary" id="nextStep">Continue to Payment</button>
+              <button type="submit" class="btn btn-primary" id="placeOrder" style="display: none;">Place Order</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="checkout-summary">
+          <div class="summary-title">Order Summary</div>
+          <div class="summary-items" id="checkoutSummary">
+            <!-- Order items will be populated by JavaScript -->
+          </div>
+          <div class="summary-total">
+            <span>Total:</span>
+            <span id="summaryTotal">₹0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Confirmation Page -->
+  <div class="confirmation-page" id="confirmationPage">
+    <div class="confirmation-content">
+      <div class="confirmation-header">
+        <div class="confirmation-icon">✅</div>
+        <h2>Order Confirmed!</h2>
+        <p>Thank you for choosing AgriRent. Your equipment will be delivered soon.</p>
+      </div>
+      <div class="confirmation-body">
+        <h3>Order Details</h3>
+        <div class="order-details" id="orderDetails">
+          <!-- Order details will be populated by JavaScript -->
+        </div>
+        <p>Our team will contact you within 24 hours to confirm the delivery time. If you have any questions, please call us at <strong>+1 234 567 890</strong>.</p>
+        
+        <div class="confirmation-actions">
+          <button class="btn btn-primary" id="backToHome">Back to Home</button>
+          <button class="btn btn-secondary" id="printReceipt">Print Receipt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking Modal -->
+  <div class="modal" id="bookingModal">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <img id="modalImage" class="modal-img" alt="Equipment">
+      <h2 id="modalTitle"></h2>
+      <p class="modal-price" id="modalPrice"></p>
+      <form id="bookingForm">
+        <label>Your Name</label>
+        <input type="text" id="customerName" required/>
+        <label>Rental Duration (days)</label>
+        <input type="number" id="rentalDays" min="1" required/>
+        <label>Contact Number</label>
+        <input type="tel" id="contactNumber" required/>
+        <label>Delivery Address</label>
+        <textarea id="deliveryAddress" rows="3" required></textarea>
+        <button type="submit" class="btn">Confirm Booking</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>About AgriRent</h3>
+        <p>We provide modern agricultural equipment rentals to help farmers increase productivity and efficiency.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <a href="#">Home</a>
+        <a href="#">Equipment</a>
+        <a href="#">How It Works</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-section">
+        <h3>Contact Us</h3>
+        <p>📞 +1 234 567 890</p>
+        <p>✉️ info@agrirent.com</p>
+        <p>📍 123 Farm Street, Agriculture City</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2023 AgriRent. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize variables
+    let currentUser = null;
+    let cart = [];
+    let currentStep = 1;
+    let currentSlide = 0;
+
+    // DOM Elements
+    const authButtons = document.getElementById('authButtons');
+    const userMenu = document.getElementById('userMenu');
+    const userName = document.getElementById('userName');
+    const userAvatar = document.getElementById('userAvatar');
+    const loginBtn = document.getElementById('loginBtn');
+    const signupBtn = document.getElementById('signupBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    // Cart Elements
+    const cartIcon = document.getElementById('cartIcon');
+    const cartCount = document.getElementById('cartCount');
+    const cartModal = document.getElementById('cartModal');
+    const closeCart = document.getElementById('closeCart');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const continueShopping = document.getElementById('continueShopping');
+    
+    // Checkout Elements
+    const checkoutPage = document.getElementById('checkoutPage');
+    const backToCart = document.getElementById('backToCart');
+    const prevStep = document.getElementById('prevStep');
+    const nextStep = document.getElementById('nextStep');
+    const placeOrder = document.getElementById('placeOrder');
+    const checkoutForm = document.getElementById('checkoutForm');
+    const deliverySection = document.getElementById('deliverySection');
+    const paymentSection = document.getElementById('paymentSection');
+    const checkoutSummary = document.getElementById('checkoutSummary');
+    const summaryTotal = document.getElementById('summaryTotal');
+    const paymentMethods = document.querySelectorAll('.payment-method');
+    const paymentDetails = document.querySelectorAll('.payment-details');
+    const steps = document.querySelectorAll('.step');
+    
+    // Confirmation Elements
+    const confirmationPage = document.getElementById('confirmationPage');
+    const orderDetails = document.getElementById('orderDetails');
+    const backToHome = document.getElementById('backToHome');
+    const printReceipt = document.getElementById('printReceipt');
+    
+    // Modal Elements
+    const bookingModal = document.getElementById('bookingModal');
+    const closeModal = document.getElementById('closeModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalPrice = document.getElementById('modalPrice');
+    const bookingForm = document.getElementById('bookingForm');
+    
+    // Search and Filter Elements
+    const searchBox = document.getElementById('searchBox');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const sortFilter = document.getElementById('sortFilter');
+    const equipmentGrid = document.getElementById('equipmentGrid');
+    
+    // Carousel Elements
+    const slides = document.querySelectorAll('.slide');
+
+    // Equipment Data
+    const equipmentList = [
+      { id: 1, name: "John Deere Tractor", category: "tractor", price: 5000, img: "https://images.unsplash.com/photo-1614977645540-7abd88ba8e56?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+      { id: 2, name: "Mahindra Harvester", category: "harvester", price: 7500, img: "https://assets.tractorjunction.com/tractor-junction/assets/images/items/Sell-harvester-product-1667453224.jpg" },
+      { id: 3, name: "Drip Irrigation Kit", category: "irrigation", price: 1200, img: "https://5.imimg.com/data5/SELLER/Default/2022/2/ZO/ZA/GO/8323043/drip-irrigation-system-500x500.jpg" },
+      { id: 4, name: "Kubota Mini Tractor", category: "tractor", price: 4500, img: "https://images.unsplash.com/photo-1570560258877-2c6c1c9e1c97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" },
+      { id: 5, name: "Krishi 2 Stroke Rotavator", category: "Rotavators", price: 1000, img: "https://m.media-amazon.com/images/I/41U0y+aiCwL._SY300_SX300_QL70_FMwebp_.jpg" },
+      { id: 6, name: "Krishi 4.5 Stroke Rotavator", category: "Rotavators", price: 750, img: "https://m.media-amazon.com/images/I/614Ic2-YHkL._SX679_.jpg" },
+      { id: 7, name: "20L Pest Sprayer", category: "pest control", price: 700, img: "https://m.media-amazon.com/images/I/71TGP9yQP9L._SX679_.jpg" },
+      { id: 8, name: "18L Pest Sprayer", category: "pest control", price: 600, img: "https://m.media-amazon.com/images/I/41CuRP81hKL._SY300_SX300_QL70_FMwebp_.jpg" },
+      { id: 9, name: "16L Pest Sprayer", category: "pest control", price: 500, img: "https://m.media-amazon.com/images/I/71n0KX6ZliL._SX679_.jpg" }
+    ];
+
+    // Initialize the application
+    function init() {
+      checkAuthStatus();
+      loadCart();
+      renderEquipment();
+      startCarousel();
+      setupEventListeners();
+    }
+
+    // Check if user is logged in
+    function checkAuthStatus() {
+      const savedUser = localStorage.getItem('agrirentUser');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        updateUIForLoggedInUser();
+      }
+    }
+
+    // Load cart from localStorage
+    function loadCart() {
+      const savedCart = localStorage.getItem('agrirentCart');
+      if (savedCart) {
+        cart = JSON.parse(savedCart);
+        updateCartUI();
+      }
+    }
+
+    // Save cart to localStorage
+    function saveCart() {
+      localStorage.setItem('agrirentCart', JSON.stringify(cart));
+    }
+
+    // Update UI when user is logged in
+    function updateUIForLoggedInUser() {
+      authButtons.style.display = 'none';
+      userMenu.style.display = 'flex';
+      userName.textContent = currentUser.name;
+      userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+    }
+
+    // Update UI when user is logged out
+    function updateUIForLoggedOutUser() {
+      authButtons.style.display = 'flex';
+      userMenu.style.display = 'none';
+      currentUser = null;
+    }
+
+    // Render equipment grid
+    function renderEquipment() {
+      let filtered = equipmentList.filter(item =>
+        item.name.toLowerCase().includes(searchBox.value.toLowerCase()) &&
+        (categoryFilter.value === "" || item.category === categoryFilter.value)
+      );
+
+      if (sortFilter.value === "low-high") {
+        filtered.sort((a, b) => a.price - b.price);
+      } else if (sortFilter.value === "high-low") {
+        filtered.sort((a, b) => b.price - a.price);
+      }
+
+      equipmentGrid.innerHTML = "";
+      filtered.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="card-badge">${item.category}</div>
+          <img src="${item.img}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/300x200?text=Equipment+Image'">
+          <div class="card-body">
+            <span class="card-category">${item.category}</span>
+            <h3>${item.name}</h3>
+            <p class="price">₹${item.price}/day</p>
+            <div class="card-actions">
+              <button class="btn-card rent-btn">Rent Now</button>
+              <button class="btn-card btn-cart-add cart-btn">+</button>
+            </div>
+          </div>
+        `;
+        
+        // Add event listeners to buttons
+        const rentBtn = card.querySelector('.rent-btn');
+        const cartBtn = card.querySelector('.cart-btn');
+        
+        rentBtn.addEventListener('click', () => openBooking(item));
+        cartBtn.addEventListener('click', () => addToCart(item));
+        
+        equipmentGrid.appendChild(card);
+      });
+    }
+
+    // Add item to cart
+    function addToCart(item) {
+      const existingItem = cart.find(cartItem => cartItem.id === item.id);
+      
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          img: item.img,
+          category: item.category,
+          quantity: 1
+        });
+      }
+      
+      saveCart();
+      updateCartUI();
+      alert(`${item.name} added to cart!`);
+    }
+
+    // Update cart UI
+    function updateCartUI() {
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      cartCount.textContent = totalItems;
+      
+      if (cart.length === 0) {
+        cartItems.innerHTML = `
+          <div class="empty-cart">
+            <div class="empty-cart-icon">🛒</div>
+            <p>Your cart is empty</p>
+            <p>Add some equipment to get started!</p>
+          </div>
+        `;
+        cartTotal.textContent = '₹0';
+        checkoutBtn.disabled = true;
+      } else {
+        cartItems.innerHTML = '';
+        let total = 0;
+        
+        cart.forEach(item => {
+          const itemTotal = item.price * item.quantity;
+          total += itemTotal;
+          
+          const cartItemElement = document.createElement('div');
+          cartItemElement.className = 'cart-item';
+          cartItemElement.innerHTML = `
+            <img src="${item.img}" alt="${item.name}" class="cart-item-img" onerror="this.src='https://via.placeholder.com/80x80?text=Image'">
+            <div class="cart-item-details">
+              <div class="cart-item-name">${item.name}</div>
+              <div class="cart-item-price">₹${item.price}/day</div>
+              <div class="cart-item-controls">
+                <button class="quantity-btn minus">-</button>
+                <input type="number" class="quantity-input" value="${item.quantity}" min="1">
+                <button class="quantity-btn plus">+</button>
+              </div>
+            </div>
+            <button class="remove-item">&times;</button>
+          `;
+          
+          // Add event listeners to cart item controls
+          const minusBtn = cartItemElement.querySelector('.minus');
+          const plusBtn = cartItemElement.querySelector('.plus');
+          const quantityInput = cartItemElement.querySelector('.quantity-input');
+          const removeBtn = cartItemElement.querySelector('.remove-item');
+          
+          minusBtn.addEventListener('click', () => updateQuantity(item.id, item.quantity - 1));
+          plusBtn.addEventListener('click', () => updateQuantity(item.id, item.quantity + 1));
+          quantityInput.addEventListener('change', (e) => {
+            const newQuantity = parseInt(e.target.value);
+            if (!isNaN(newQuantity) && newQuantity > 0) {
+              updateQuantity(item.id, newQuantity);
+            }
+          });
+          removeBtn.addEventListener('click', () => removeFromCart(item.id));
+          
+          cartItems.appendChild(cartItemElement);
+        });
+        
+        cartTotal.textContent = `₹${total}`;
+        checkoutBtn.disabled = false;
+      }
+    }
+
+    // Update item quantity in cart
+    function updateQuantity(itemId, newQuantity) {
+      if (newQuantity < 1) {
+        removeFromCart(itemId);
+        return;
+      }
+      
+      const item = cart.find(item => item.id === itemId);
+      if (item) {
+        item.quantity = newQuantity;
+        saveCart();
+        updateCartUI();
+      }
+    }
+
+    // Remove item from cart
+    function removeFromCart(itemId) {
+      cart = cart.filter(item => item.id !== itemId);
+      saveCart();
+      updateCartUI();
+    }
+
+    // Open booking modal
+    function openBooking(item) {
+      if (!currentUser) {
+        alert('Please log in to book equipment');
+        return;
+      }
+      
+      modalImage.src = item.img;
+      modalTitle.textContent = item.name;
+      modalPrice.textContent = `₹${item.price}/day`;
+      
+      // Pre-fill form with user data
+      document.getElementById('customerName').value = currentUser.name;
+      document.getElementById('contactNumber').value = currentUser.phone || '';
+      
+      bookingModal.style.display = 'flex';
+    }
+
+    // Open checkout page
+    function openCheckout() {
+      if (!currentUser) {
+        alert('Please log in to proceed with checkout');
+        closeCartModal();
+        return;
+      }
+      
+      if (cart.length === 0) {
+        alert('Your cart is empty');
+        return;
+      }
+      
+      // Close cart and open checkout
+      closeCartModal();
+      checkoutPage.style.display = 'block';
+      
+      // Pre-fill user details
+      document.getElementById('deliveryName').value = currentUser.name;
+      document.getElementById('deliveryPhone').value = currentUser.phone || '';
+      
+      // Set minimum delivery date to tomorrow
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      document.getElementById('deliveryDate').min = tomorrow.toISOString().split('T')[0];
+      
+      // Update order summary
+      updateCheckoutSummary();
+      
+      // Reset to first step
+      goToStep(1);
+    }
+
+    // Update checkout summary
+    function updateCheckoutSummary() {
+      checkoutSummary.innerHTML = '';
+      let total = 0;
+      const rentalDays = parseInt(document.getElementById('rentalDays').value) || 1;
+      
+      cart.forEach(item => {
+        const itemTotal = item.price * item.quantity * rentalDays;
+        total += itemTotal;
+        
+        const summaryItem = document.createElement('div');
+        summaryItem.className = 'summary-item-checkout';
+        summaryItem.innerHTML = `
+          <div class="item-name">${item.name}</div>
+          <div class="item-quantity">${item.quantity} x ${rentalDays} days</div>
+          <div class="item-price">₹${itemTotal}</div>
+        `;
+        checkoutSummary.appendChild(summaryItem);
+      });
+      
+      summaryTotal.textContent = `₹${total}`;
+    }
+
+    // Navigate between checkout steps
+    function goToStep(step) {
+      currentStep = step;
+      
+      // Update step indicators
+      steps.forEach((s, index) => {
+        if (index < step) {
+          s.classList.add('active');
+        } else {
+          s.classList.remove('active');
+        }
+      });
+      
+      // Show/hide sections based on current step
+      if (step === 1) {
+        deliverySection.style.display = 'block';
+        paymentSection.style.display = 'none';
+        prevStep.style.display = 'none';
+        nextStep.style.display = 'inline-flex';
+        placeOrder.style.display = 'none';
+        backToCart.style.display = 'inline-flex';
+      } else if (step === 2) {
+        deliverySection.style.display = 'none';
+        paymentSection.style.display = 'block';
+        prevStep.style.display = 'inline-flex';
+        nextStep.style.display = 'none';
+        placeOrder.style.display = 'inline-flex';
+        backToCart.style.display = 'none';
+      }
+    }
+
+    // Handle next step in checkout
+    function handleNextStep() {
+      // Validate delivery details
+      const deliveryName = document.getElementById('deliveryName').value;
+      const deliveryPhone = document.getElementById('deliveryPhone').value;
+      const deliveryAddress = document.getElementById('deliveryAddress').value;
+      const deliveryDate = document.getElementById('deliveryDate').value;
+      
+      if (!deliveryName || !deliveryPhone || !deliveryAddress || !deliveryDate) {
+        alert('Please fill in all delivery details');
+        return;
+      }
+      
+      // Update summary with new rental days
+      updateCheckoutSummary();
+      
+      // Proceed to next step
+      goToStep(2);
+    }
+
+    // Handle previous step in checkout
+    function handlePrevStep() {
+      goToStep(1);
+    }
+
+    // Handle place order
+    function handlePlaceOrder(e) {
+      e.preventDefault();
+      
+      // Validate payment method
+      const selectedPayment = document.querySelector('.payment-method.selected');
+      if (!selectedPayment) {
+        alert('Please select a payment method');
+        return;
+      }
+      
+      // Get form values
+      const deliveryName = document.getElementById('deliveryName').value;
+      const deliveryPhone = document.getElementById('deliveryPhone').value;
+      const deliveryAddress = document.getElementById('deliveryAddress').value;
+      const deliveryCity = document.getElementById('deliveryCity').value;
+      const deliveryState = document.getElementById('deliveryState').value;
+      const deliveryZip = document.getElementById('deliveryZip').value;
+      const deliveryDate = document.getElementById('deliveryDate').value;
+      const rentalDays = parseInt(document.getElementById('rentalDays').value) || 1;
+      const paymentMethod = selectedPayment.dataset.method;
+      
+      // Calculate total
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity * rentalDays), 0);
+      
+      // Generate order ID
+      const orderId = 'AGR' + Math.floor(100000 + Math.random() * 900000);
+      
+      // Create order object
+      const order = {
+        id: orderId,
+        date: new Date().toISOString(),
+        items: [...cart],
+        rentalDays: rentalDays,
+        total: total,
+        deliveryDetails: {
+          name: deliveryName,
+          phone: deliveryPhone,
+          address: deliveryAddress,
+          city: deliveryCity,
+          state: deliveryState,
+          zip: deliveryZip,
+          date: deliveryDate
+        },
+        paymentMethod: paymentMethod
+      };
+      
+      // Clear cart
+      cart = [];
+      saveCart();
+      updateCartUI();
+      
+      // Close checkout and show confirmation
+      checkoutPage.style.display = 'none';
+      showOrderConfirmation(order);
+    }
+
+    // Show order confirmation page
+    function showOrderConfirmation(order) {
+      // Format delivery date
+      const deliveryDate = new Date(order.deliveryDetails.date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      // Update order details
+      orderDetails.innerHTML = `
+        <div class="detail-item">
+          <span class="detail-label">Order ID</span>
+          <span class="detail-value">#${order.id}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Order Date</span>
+          <span class="detail-value">${new Date(order.date).toLocaleDateString()}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Delivery Date</span>
+          <span class="detail-value">${deliveryDate}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Delivery Address</span>
+          <span class="detail-value">${order.deliveryDetails.address}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Payment Method</span>
+          <span class="detail-value">${order.paymentMethod}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Total Amount</span>
+          <span class="detail-value">₹${order.total}</span>
+        </div>
+      `;
+      
+      // Show confirmation page
+      confirmationPage.style.display = 'block';
+    }
+
+    // Handle payment method selection
+    function handlePaymentMethodSelect(e) {
+      // Remove selected class from all methods
+      paymentMethods.forEach(method => {
+        method.classList.remove('selected');
+      });
+      
+      // Add selected class to clicked method
+      e.currentTarget.classList.add('selected');
+      
+      // Hide all payment details
+      paymentDetails.forEach(details => {
+        details.classList.remove('active');
+      });
+      
+      // Show details for selected method
+      const method = e.currentTarget.dataset.method;
+      document.getElementById(`${method}Details`).classList.add('active');
+    }
+
+    // Handle login
+    function handleLogin() {
+      const email = "user@example.com"; // Simplified for demo
+      const password = "password"; // Simplified for demo
+      
+      if (email && password) {
+        const mockUser = {
+          name: 'Demo User',
+          email: email,
+          phone: '+1 234 567 890'
+        };
+        
+        localStorage.setItem('agrirentUser', JSON.stringify(mockUser));
+        currentUser = mockUser;
+        updateUIForLoggedInUser();
+        alert('Successfully logged in!');
+      }
+    }
+
+    // Handle signup
+    function handleSignup() {
+      const name = "Demo User";
+      const email = "user@example.com";
+      const phone = "+1 234 567 890";
+      
+      const newUser = {
+        name: name,
+        email: email,
+        phone: phone
+      };
+      
+      localStorage.setItem('agrirentUser', JSON.stringify(newUser));
+      currentUser = newUser;
+      updateUIForLoggedInUser();
+      alert('Account created successfully!');
+    }
+
+    // Handle logout
+    function handleLogout() {
+      localStorage.removeItem('agrirentUser');
+      updateUIForLoggedOutUser();
+      alert('You have been logged out');
+    }
+
+    // Open cart modal
+    function openCart() {
+      cartModal.style.display = 'block';
+    }
+
+    // Close cart modal
+    function closeCartModal() {
+      cartModal.style.display = 'none';
+    }
+
+    // Close booking modal
+    function closeBookingModal() {
+      bookingModal.style.display = 'none';
+    }
+
+    // Close checkout page
+    function closeCheckoutPage() {
+      checkoutPage.style.display = 'none';
+    }
+
+    // Close confirmation page
+    function closeConfirmationPage() {
+      confirmationPage.style.display = 'none';
+    }
+
+    // Handle booking form submission
+    function handleBookingSubmit(e) {
+      e.preventDefault();
+      alert('Booking confirmed! Our team will contact you soon.');
+      closeBookingModal();
+    }
+
+    // Carousel functionality
+    function startCarousel() {
+      setInterval(() => {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+      }, 5000);
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Auth buttons
+      loginBtn.addEventListener('click', handleLogin);
+      signupBtn.addEventListener('click', handleSignup);
+      logoutBtn.addEventListener('click', handleLogout);
+      
+      // Cart functionality
+      cartIcon.addEventListener('click', openCart);
+      closeCart.addEventListener('click', closeCartModal);
+      checkoutBtn.addEventListener('click', openCheckout);
+      continueShopping.addEventListener('click', closeCartModal);
+      
+      // Checkout functionality
+      backToCart.addEventListener('click', () => {
+        closeCheckoutPage();
+        openCart();
+      });
+      nextStep.addEventListener('click', handleNextStep);
+      prevStep.addEventListener('click', handlePrevStep);
+      placeOrder.addEventListener('click', handlePlaceOrder);
+      
+      // Payment method selection
+      paymentMethods.forEach(method => {
+        method.addEventListener('click', handlePaymentMethodSelect);
+      });
+      
+      // Update summary when rental days change
+      document.getElementById('rentalDays').addEventListener('change', updateCheckoutSummary);
+      
+      // Confirmation page actions
+      backToHome.addEventListener('click', closeConfirmationPage);
+      printReceipt.addEventListener('click', () => {
+        window.print();
+      });
+      
+      // Modal functionality
+      closeModal.addEventListener('click', closeBookingModal);
+      bookingForm.addEventListener('submit', handleBookingSubmit);
+      
+      // Search and filter
+      searchBox.addEventListener('input', renderEquipment);
+      categoryFilter.addEventListener('change', renderEquipment);
+      sortFilter.addEventListener('change', renderEquipment);
+      
+      // Close modals when clicking outside
+      window.addEventListener('click', (e) => {
+        if (e.target === cartModal) closeCartModal();
+        if (e.target === bookingModal) closeBookingModal();
+        if (e.target === checkoutPage) closeCheckoutPage();
+        if (e.target === confirmationPage) closeConfirmationPage();
+      });
+    }
+
+    // Initialize the application when DOM is loaded
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
